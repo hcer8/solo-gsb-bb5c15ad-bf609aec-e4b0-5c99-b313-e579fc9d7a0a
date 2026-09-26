@@ -1,0 +1,15 @@
+services:
+  morse-decoder:
+    build: .
+    image: morse-decoder:latest
+    ports:
+      - "${HOST_PORT:-8000}:${APP_PORT:-8000}"
+    environment:
+      APP_PORT: ${APP_PORT:-8000}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,urllib.request; urllib.request.urlopen('http://127.0.0.1:' + os.environ.get('APP_PORT', '8000') + '/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
